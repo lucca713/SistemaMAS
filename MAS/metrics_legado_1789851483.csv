@@ -1,0 +1,17 @@
+timestamp,model_name,user_intent,duration_seconds,status,replan_count
+2026-08-26T09:11:26.201596,Gemini_Modelo_1,Vá para o bloco,30.1,success,0
+2026-08-26T09:34:57.654267,Gemini_Modelo_1,va para o bloco ,200.48,success,0
+2026-08-26T09:45:42.610953,Gemini_Modelo_1,va ao bloco,159.8,success,0
+2026-08-26T11:36:03.975189,Gemini_Modelo_1,vva ate o bloco,1.42,success,0
+2026-08-26T11:43:16.195204,Gemini_Modelo_1,va ate o bloco,7.48,success,0
+2026-08-26T11:47:39.564899,Gemini_Modelo_1,va ater o bloco,3.36,success,0
+2026-08-26T11:52:07.859113,Gemini_Modelo_1,va ate o bloco,15.5,success,0
+2026-08-26T12:18:06.209436,Gemini_Modelo_1,va para o bloco,52.91,success,0
+2026-08-26T12:25:18.847154,Gemini_Modelo_1,va ate o bloco,20.33,success,0
+2026-08-26T12:27:39.514067,Gemini_Modelo_1,vai ate o bloco,15.63,success,0
+2026-08-26T12:33:21.448010,Gemini_Modelo_1, va ate o bloco,49.92,success,0
+2026-08-26T12:47:59.627770,Gemini_Modelo_1,va ate o bloco,19.15,success,0
+2026-08-26T12:50:47.425937,Gemini_Modelo_1,va para o bloco,15.63,success,0
+2026-08-26T12:58:13.302553,Gemini_Modelo_1,va ate o bloco,19.17,success,0
+2026-08-26T13:05:11.955083,Gemini_Modelo_1,va ate o bloco,19.17,success,0
+2026-09-19T17:57:01,llama3.1,va ate o bloco,success,67.96,2,5,20,3.397,0.0,0.649,13.2

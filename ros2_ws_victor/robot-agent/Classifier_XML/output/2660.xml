@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<huricExample id="2660">
+  <commands>
+    <command>
+      <sentence>open the box on the left</sentence>
+      <tokens>
+        <token id="1" surface="open" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="box" label="object"/>
+        <token id="4" surface="on" label="other"/>
+        <token id="5" surface="the" label="other"/>
+        <token id="6" surface="left" label="direction"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

@@ -1,0 +1,152 @@
+# Como Rodar o Robot Agent com ROS2
+
+## 📋 Pré-requisitos
+
+### 1. Sistema
+- Ubuntu com ROS2 Humble instalado
+- Python 3.10+
+- Ollama instalado
+
+### 2. Dependências Python
+```bash
+pip install -U langchain-ollama langchain-core pyyaml requests
+```
+
+## 🚀 Passos para Execução
+
+### 1. Preparar o Ollama
+**IMPORTANTE**: Sempre execute estes passos primeiro!
+
+```bash
+# Verificar se o Ollama está rodando na porta 11434
+sudo lsof -i :11434
+
+# Se estiver rodando, matar o processo (substitua XXX pelo PID mostrado)
+kill XXX
+
+# Iniciar o Ollama em terminal (para ver logs)
+ollama serve
+
+# Em outro terminal, verificar se o modelo está instalado
+ollama list
+
+# Se não tiver o gemma3:4b, instalar:
+ollama pull gemma3:4b
+```
+
+### 2. Preparar o Workspace ROS2
+```bash
+cd ~/ros2_ws
+
+# Configurar ambiente ROS2
+source /opt/ros/humble/setup.bash
+
+# Compilar o pacote robot_agent
+colcon build --packages-select robot_agent
+
+# Configurar ambiente do workspace
+source install/setup.bash
+```
+
+### 3. Executar o Sistema
+
+#### Opção A: Sistema Completo (Router + Agentes)
+```bash
+cd /home/victor/teste_ros/ros2_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+python3 router.py
+```
+
+#### Opção B: Apenas Testes das Ferramentas ROS2
+```bash
+cd /home/victor/teste_ros/ros2_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+python3 src/robot_agent/robot_tools.py
+```
+
+### 4. Monitorar ROS2 (Opcional)
+Em terminal separado:
+```bash
+cd ~/ros2_ws
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+# Monitorar todos os tópicos
+python3 simple_room_subscriber.py
+
+# OU monitorar apenas o tópico 'room' com comando ROS2
+ros2 topic echo /room
+```
+
+## 🔧 Solução de Problemas
+
+### Erro: "model gemma3:4b not found"
+```bash
+# Verificar modelos disponíveis
+ollama list
+
+# Instalar o modelo se necessário
+ollama pull gemma3:4b
+```
+
+### Erro: "Cannot connect to Ollama"
+```bash
+# Verificar se o Ollama está rodando
+sudo lsof -i :11434
+
+# Se não estiver, iniciar:
+ollama serve
+```
+
+### Erro: "ROS2 command not found"
+```bash
+# Configurar ambiente ROS2
+source /opt/ros/humble/setup.bash
+```
+
+### Erro: "robot_agent package not found"
+```bash
+# Recompilar o pacote
+cd /home/victor/teste_ros/ros2_ws
+colcon build --packages-select robot_agent
+source install/setup.bash
+```
+
+### Erro de import do LangChain
+```bash
+# Reinstalar dependências
+pip install -U langchain-ollama langchain-core
+```
+
+
+## 📊 Estrutura dos Arquivos
+
+```
+ros2_ws/
+├── router.py              # Ponto de entrada principal
+├── main_robot_agent.py    # Agente de comandos
+├── conversation_agent.py  # Agente de conversação
+├── ros2_monitor.py        # Monitor de tópicos ROS2
+└── src/robot_agent/robot_agent/
+    └── robot_tools.py     # Ferramentas do robô com ROS2
+```
+
+## ⚠️ Cuidados Importantes
+
+1. **Sempre iniciar o Ollama primeiro** e verificar se está funcionando
+2. **Compilar o workspace** com `colcon build` após mudanças
+3. **Configurar ambiente** com `source` nos comandos antes de executar
+4. **Verificar dependências** se houver erros de import
+5. **Usar Ctrl+C** para parar processos em execução
+6. **Fechar o Ollama** com `kill PID` se necessário
+
+## 🎯 Fluxo Normal de Uso
+
+1. Abrir terminal 1: Iniciar Ollama (`ollama serve`)
+2. Abrir terminal 2: Executar sistema (`python3 router.py`)
+3. Abrir terminal 3 (opcional): Monitor ROS2 (`python3 ros2_monitor.py`)
+4. Interagir com o robô através do terminal 2
+5. Observar mensagens ROS2 no terminal 3
+

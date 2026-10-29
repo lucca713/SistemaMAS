@@ -1,0 +1,45 @@
+# ---------------------------------------------------------------------------
+# Artefatos de build do ROS 2 / colcon — regerados por `colcon build`
+# ---------------------------------------------------------------------------
+build/
+install/
+log/
+*.colcon_install_layout
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# ---------------------------------------------------------------------------
+# Segredos: chaves de API nunca entram no repositório
+# ---------------------------------------------------------------------------
+.env
+*.env
+!*.env.example
+
+# ---------------------------------------------------------------------------
+# Serialização do SLAM Toolbox (~83 MB) — regenerável e desnecessária para
+# reproduzir os experimentos: o map_server carrega apenas o .pgm + .yaml,
+# que estão versionados em ros2_ws_vinicius/maps/.
+# ---------------------------------------------------------------------------
+*.posegraph
+ros2_ws_vinicius/maps/*.data
+
+# Bases vetoriais e índices regeneráveis (RAG)
+**/vector_db/
+*.sqlite3
+chroma_db/
+
+# Saídas de execução
+nohup.out
+*.log
+
+# Editores e SO
+.vscode/
+.idea/
+.DS_Store
+*~
+*.swp

@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<huricExample id="2648">
+  <commands>
+    <command>
+      <sentence>go to the counter at your left</sentence>
+      <tokens>
+        <token id="1" surface="go" label="action"/>
+        <token id="2" surface="to" label="other"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="counter" label="object"/>
+        <token id="5" surface="at" label="other"/>
+        <token id="6" surface="your" label="other"/>
+        <token id="7" surface="left" label="direction"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

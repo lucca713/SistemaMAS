@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<huricExample id="2661">
+  <commands>
+    <command>
+      <sentence>search in the corridor for the jar</sentence>
+      <tokens>
+        <token id="1" surface="search" label="action"/>
+        <token id="2" surface="in" label="other"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="corridor" label="room"/>
+        <token id="5" surface="for" label="other"/>
+        <token id="6" surface="the" label="other"/>
+        <token id="7" surface="jar" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

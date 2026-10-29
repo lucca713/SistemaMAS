@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<sdf version='1.10'>
+<model name='Cenarios'>
+      <static>true</static>
+      <pose>3.9 0 1.0 0 0 0</pose><!--Pose relativa ao mundo-->
+      <link name='box'>
+          <visual name='visual'>
+              <geometry>
+                  <box>
+                      <size>3 10.0 5.0</size>
+                  </box>
+              </geometry>
+              <!-- Definindo cores -->
+              <material>
+                  <ambient>0.0 0.0 1.0 1</ambient>
+                  <diffuse>0.0 0.0 1.0 1</diffuse>
+                  <specular>0.0 0.0 1.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'>
+              <geometry>
+                  <box>
+                      <size>3 10.0 5.0</size>
+                  </box>
+              </geometry>
+          </collision>
+      </link>
+  </model>
+</sdf>

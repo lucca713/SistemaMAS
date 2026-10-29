@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<huricExample id="2639">
+  <commands>
+    <command>
+      <sentence>catch the pillow</sentence>
+      <tokens>
+        <token id="1" surface="catch" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="pillow" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

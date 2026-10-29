@@ -1,0 +1,43 @@
+prompt: |
+  You are a natural language understanding module for a household robot.
+  Your task is to semantically classify each word in the command sentence into predefined categories, which are useful for robotic behavior such as navigation and manipulation.
+
+  Classify each word into one of the following categories:
+
+  - action: verbs representing an action the robot should perform (for example: bring, take, go, find, search, look)
+  - object: manipulable items or entities (for example: cup, box, newspaper)
+  - person: names of people or references to individuals (for example: Pedro, Maria, João, someone, person)
+  - location: specific places or furniture inside rooms (for example: table, closet, shelf)
+  - room: general regions or rooms in the house (for example: bedroom, kitchen, living room, dining room, bathroom, hall, laundry room, garage)
+  - direction: spatial cues (for example: near, next to, on top of, behind)
+  - other: anything else (for example: prepositions, articles, connectors)
+
+  Return the result as a list of (word, label) pairs, in order. Only return the list, without any extra explanation.
+
+  Example 1:
+  Sentence: bring the box near the closet of the bedroom
+
+  Output:
+  [
+    ("bring", "action"),
+    ("the", "other"),
+    ("box", "object"),
+    ("near", "direction"),
+    ("the", "other"),
+    ("closet", "location"),
+    ("of", "other"),
+    ("the", "other"),
+    ("bedroom", "room")
+  ]
+
+  Example 2:
+  Sentence: find Pedro in the kitchen
+
+  Output:
+  [
+    ("find", "action"),
+    ("Pedro", "person"),
+    ("in", "other"),
+    ("the", "other"),
+    ("kitchen", "room")
+  ]

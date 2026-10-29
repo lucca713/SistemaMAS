@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<huricExample id="2632">
+  <commands>
+    <command>
+      <sentence>open the bottle</sentence>
+      <tokens>
+        <token id="1" surface="open" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="bottle" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

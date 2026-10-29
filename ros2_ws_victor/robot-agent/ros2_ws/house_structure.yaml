@@ -1,0 +1,86 @@
+# House structure information for the robot agent
+# This defines the static structure of the house (rooms) and typical object categories
+# The agent uses this for general knowledge, NOT for knowing the current state
+
+house:
+  # All available rooms in the house
+  rooms:
+    - bedroom
+    - dining room
+    - living room
+    - kitchen
+    - laundry room
+    - hall
+    - garage
+    - bathroom
+  
+  # Typical objects that might be found in each room (general knowledge, not current state)
+  typical_objects_by_room:
+    kitchen:
+      - cup
+      - mug
+      - plate
+      - bowl
+      - knife
+      - fork
+      - spoon
+      - pot
+      - pan
+      - refrigerator
+      - microwave
+      - dishwasher
+      - sink
+      - trash bag
+      - detergent
+    
+    living room:
+      - couch
+      - television
+      - remote control
+      - book
+      - magazine
+      - dvd
+      - cd
+      - bookcase
+    
+    dining room:
+      - dinner table
+      - chair
+      - plate
+      - glass
+      - napkin
+    
+    bedroom:
+      - bed
+      - table
+      - notebook
+      - pen
+      - clothes
+      - book
+    
+    laundry room:
+      - laundry detergent
+      - trash bag
+      - cleaning supplies
+      - cloth
+      - sponge
+    
+    hall:
+      - coat rack
+      - umbrella
+    
+    garage:
+      - shopping bag
+      - backpack
+      - tools
+      - storage items
+    
+    bathroom:
+      - towel
+      - soap
+      - cleaning supplies
+
+  # Physical constraints (for future Deus Ex Machina feature)
+  constraints:
+    max_lifting_weight_kg: 3.0  # Maximum weight the robot can safely lift
+    restricted_areas: []  # Areas the robot cannot access (empty for now)

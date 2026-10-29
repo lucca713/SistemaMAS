@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<huricExample id="2663">
+  <commands>
+    <command>
+      <sentence>take the case at the left of the box</sentence>
+      <tokens>
+        <token id="1" surface="take" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="case" label="object"/>
+        <token id="4" surface="at" label="other"/>
+        <token id="5" surface="the" label="other"/>
+        <token id="6" surface="left" label="direction"/>
+        <token id="7" surface="of" label="other"/>
+        <token id="8" surface="the" label="other"/>
+        <token id="9" surface="box" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

@@ -1,0 +1,26 @@
+fase,config,destino,chegou,duracao_s,dist_real_m,erro_localizacao_m,nav2_reportou,observacao
+A,SLAM mapping + waypoints deduzidos do SDF,living room,NAO,19.8,,,error:6 (ABORTED),mapa ao vivo cobria so 15x14m; 3 destinos fora do mapa
+A,SLAM mapping + waypoints deduzidos do SDF,bedroom,NAO,30.0,,,error:6 (ABORTED),mapa ao vivo cobria so 15x14m; 3 destinos fora do mapa
+A,SLAM mapping + waypoints deduzidos do SDF,kitchen,NAO,20.0,,,error:6 (ABORTED),mapa ao vivo cobria so 15x14m; 3 destinos fora do mapa
+A,SLAM mapping + waypoints deduzidos do SDF,dining room,SIM,19.8,,,success,mapa ao vivo cobria so 15x14m; 3 destinos fora do mapa
+A,SLAM mapping + waypoints deduzidos do SDF,hall,SIM,19.2,,,success,mapa ao vivo cobria so 15x14m; 3 destinos fora do mapa
+B,SLAM mapping + sondagem por coordenada,"(-4.0,3.0) NO perto",SIM,10.8,,,status=4 dist=0.48m andou=4.57m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(3.0,-3.0) SE perto",SIM,18.6,,,status=4 dist=0.49m andou=8.30m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(-4.0,-4.0) SO perto",SIM,13.6,,,status=4 dist=0.47m andou=6.23m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(0.5,4.0) N  perto",SIM,60.7,,,status=4 dist=0.81m andou=8.05m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(-7.0,5.0) NO medio",SIM,54.5,,,status=4 dist=0.79m andou=6.81m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(4.0,-6.0) SE medio",NAO,91.1,,,timeout de 90s,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(-9.0,-5.0) SO medio",NAO,30.2,,,status=6 dist=11.91m andou=0.85m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(4.0,0.5) L  medio",SIM,54.0,,,status=4 dist=0.47m andou=4.31m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(-6.0,8.0) NO longe",SIM,66.1,,,status=4 dist=0.47m andou=12.10m,marcha para fora amplia o mapa
+B,SLAM mapping + sondagem por coordenada,"(7.0,-5.0) SE longe",NAO,23.9,,,status=6 dist=17.54m andou=0.54m,marcha para fora amplia o mapa
+C,Nav2 parcialmente ativo (clock parado na subida),living room,NAO,0.3,8.60,0.24,rejected,bt_navigator e behavior_server inactive
+C,Nav2 parcialmente ativo (clock parado na subida),kitchen,NAO,0.3,10.30,0.24,rejected,bt_navigator e behavior_server inactive
+C,Nav2 parcialmente ativo (clock parado na subida),bedroom,NAO,0.4,13.31,0.24,rejected,bt_navigator e behavior_server inactive
+C,Nav2 parcialmente ativo (clock parado na subida),dining room,NAO,0.3,8.85,0.24,rejected,bt_navigator e behavior_server inactive
+C,Nav2 parcialmente ativo (clock parado na subida),hall,SIM,0.3,0.00,0.24,rejected,bt_navigator e behavior_server inactive
+D,mapa salvo + localizacao + Nav2 ativo,living room,SIM,17.4,0.72,0.25,tombado=False | Chegou em 'living room'. Distanc,odometria herdou 13m de erro; localizacao divergiu
+D,mapa salvo + localizacao + Nav2 ativo,kitchen,NAO,85.8,7.45,7.0,tombado=False | Chegou em 'kitchen'. Distancia a,odometria herdou 13m de erro; localizacao divergiu
+D,mapa salvo + localizacao + Nav2 ativo,bedroom,NAO,77.4,4.18,3.77,tombado=False | Chegou em 'bedroom'. Distancia a,odometria herdou 13m de erro; localizacao divergiu
+D,mapa salvo + localizacao + Nav2 ativo,dining room,NAO,201.3,28.09,17.86,tombado=False | Nav2 nao respondeu em 200s indo ,odometria herdou 13m de erro; localizacao divergiu
+D,mapa salvo + localizacao + Nav2 ativo,hall,NAO,3.3,19.22,18.46,"tombado=False | Nav2 reportou 'success:hall', ma",odometria herdou 13m de erro; localizacao divergiu

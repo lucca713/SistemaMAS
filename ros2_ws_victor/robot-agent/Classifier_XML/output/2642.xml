@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<huricExample id="2642">
+  <commands>
+    <command>
+      <sentence>close the jar</sentence>
+      <tokens>
+        <token id="1" surface="close" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="jar" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

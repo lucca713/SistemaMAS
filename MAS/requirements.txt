@@ -1,0 +1,6 @@
+langchain
+langgraph
+langchain-ollama
+python-dotenv
+# opcional: base de conhecimento RAG local
+chromadb

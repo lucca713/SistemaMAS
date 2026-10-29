@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<huricExample id="2644">
+  <commands>
+    <command>
+      <sentence>connect to the pc on your left</sentence>
+      <tokens>
+        <token id="1" surface="connect" label="action"/>
+        <token id="2" surface="to" label="other"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="pc" label="object"/>
+        <token id="5" surface="on" label="other"/>
+        <token id="6" surface="your" label="other"/>
+        <token id="7" surface="left" label="direction"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

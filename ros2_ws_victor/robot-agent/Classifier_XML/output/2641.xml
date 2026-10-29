@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<huricExample id="2641">
+  <commands>
+    <command>
+      <sentence>close the door on the right</sentence>
+      <tokens>
+        <token id="1" surface="close" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="door" label="object"/>
+        <token id="4" surface="on" label="other"/>
+        <token id="5" surface="the" label="other"/>
+        <token id="6" surface="right" label="direction"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

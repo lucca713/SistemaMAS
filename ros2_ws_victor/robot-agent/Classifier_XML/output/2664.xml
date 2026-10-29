@@ -1,0 +1,19 @@
+<?xml version="1.0" ?>
+<huricExample id="2664">
+  <commands>
+    <command>
+      <sentence>take the jar to the table of the kitchen</sentence>
+      <tokens>
+        <token id="1" surface="take" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="jar" label="object"/>
+        <token id="4" surface="to" label="other"/>
+        <token id="5" surface="the" label="other"/>
+        <token id="6" surface="table" label="location"/>
+        <token id="7" surface="of" label="other"/>
+        <token id="8" surface="the" label="other"/>
+        <token id="9" surface="kitchen" label="room"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

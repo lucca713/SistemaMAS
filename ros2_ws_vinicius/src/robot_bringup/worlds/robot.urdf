@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<robot name="robot" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- BASE FOOTPRINT - Projeção do robô no chão (z=0) -->
+  <link name="base_footprint"/>
+
+  <!-- BASE LINK - Centro do robô -->
+  <link name="base_link"/>
+
+  <!-- Joint entre base_footprint (chão) e base_link (centro do robô) -->
+  <joint name="base_footprint_to_base_link" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Junta fixa entre base_link e chassis -->
+  <joint name="base_to_chassis" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ======================= -->
+  <!-- CHASSIS                 -->
+  <!-- ======================= -->
+  <link name="chassis">
+    <visual>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.7" length="0.75"/>
+      </geometry>
+      <material name="Blue">
+        <color rgba="0.0 0.0 1.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!-- ======================= -->
+  <!-- RODA ESQUERDA           -->
+  <!-- ======================= -->
+  <link name="left_wheel">
+    <visual>
+      <origin xyz="0 0.85 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.5" length="0.3"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="chassis"/>
+    <child link="left_wheel"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ======================= -->
+  <!-- RODA DIREITA            -->
+  <!-- ======================= -->
+  <link name="right_wheel">
+    <visual>
+      <origin xyz="0 0 0" rpy="1.5708 0 0"/>
+      <geometry>
+        <cylinder radius="0.5" length="0.3"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.1 0.1 0.1 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="chassis"/>
+    <child link="right_wheel"/>
+    <origin xyz="0 -0.85 0" rpy="0 0 0"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <!-- ======================= -->
+  <!-- LIDAR                   -->
+  <!-- ======================= -->
+  <!-- Torre do LIDAR (haste vertical) -->
+  <link name="lidar_tower">
+    <visual>
+      <origin xyz="0 0 0.4" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.02" length="0.8"/>
+      </geometry>
+      <material name="Gray">
+        <color rgba="0.3 0.3 0.3 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="tower_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="lidar_tower"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Sensor LIDAR no topo da torre -->
+  <link name="lidar_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.05" length="0.05"/>
+      </geometry>
+      <material name="Green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="lidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="lidar_link"/>
+    <origin xyz="0 0 0.8" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ======================= -->
+  <!-- CASTER WHEELS           -->
+  <!-- ======================= -->
+  <!-- Caster Frontal -->
+  <link name="caster_front">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.12"/>
+      </geometry>
+      <material name="Green">
+        <color rgba="0 1 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="caster_front_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="caster_front"/>
+    <origin xyz="0.575 0 -0.375" rpy="0 0 0"/>
+  </joint>
+
+  <!-- Caster Traseira -->
+  <link name="caster_rear">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="0.12"/>
+      </geometry>
+      <material name="Red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+  <joint name="caster_rear_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="caster_rear"/>
+    <origin xyz="-0.575 0 -0.375" rpy="0 0 0"/>
+  </joint>
+
+</robot>

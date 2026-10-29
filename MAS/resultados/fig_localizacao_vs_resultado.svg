@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 144" width="720" height="144" font-family='system-ui, -apple-system, "Segoe UI", sans-serif' role="img" aria-label="Erro de localizacao por desfecho da missao">
+<style>.sf{fill:#fcfcfb} .tp{fill:#0b0b0b} .ts{fill:#52514e} .mu{fill:#898781} .ax{stroke:#c3c2b7} @media (prefers-color-scheme: dark){.sf{fill:#1a1a19} .tp{fill:#ffffff} .ts{fill:#c3c2b7} .mu{fill:#898781} .ax{stroke:#383835}}</style>
+<rect class="sf" x="0" y="0" width="720" height="144"/>
+<text class="tp" x="0" y="18" font-size="14" font-weight="600">Erro de localizacao por desfecho da missao</text>
+<line class="ax" x1="150" y1="34" x2="150" y2="120" stroke-width="1"/>
+<path d="M150,40 L206.1,40 Q210.1,40 210.1,44 L210.1,58 Q210.1,62 206.1,62 L150,62 Z" fill="#eb6834"/>
+<text class="ts" x="140" y="55.0" font-size="11.5" text-anchor="end">missoes que cumpriram</text>
+<text class="ts" x="218.1" y="55.0" font-size="11" style="font-variant-numeric:tabular-nums">1.26 m</text>
+<path d="M150,78 L589.5,78 Q593.5,78 593.5,82 L593.5,96 Q593.5,100 589.5,100 L150,100 Z" fill="#eb6834"/>
+<text class="ts" x="140" y="93.0" font-size="11.5" text-anchor="end">missoes que falharam</text>
+<text class="ts" x="601.5" y="93.0" font-size="11" style="font-variant-numeric:tabular-nums">9.31 m</text>
+</svg>

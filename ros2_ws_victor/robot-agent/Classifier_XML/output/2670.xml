@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<huricExample id="2670">
+  <commands>
+    <command>
+      <sentence>turn on the switch</sentence>
+      <tokens>
+        <token id="1" surface="turn" label="action"/>
+        <token id="2" surface="on" label="other"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="switch" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

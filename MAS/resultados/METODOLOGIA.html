@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Metodologia Experimental - Sistema Multiagente LLM</title>
+<style>
+body { margin: 0; font-family: "Liberation Serif", Georgia, serif; font-size: 11pt; line-height: 1.45; color: #111; }
+h1 { font-size: 17pt; margin: 0 0 4pt 0; }
+h2 { font-size: 13pt; margin: 20pt 0 6pt 0; border-bottom: 1px solid #999; padding-bottom: 3pt; }
+h3 { font-size: 11.5pt; margin: 14pt 0 4pt 0; }
+p  { margin: 5pt 0; text-align: justify; }
+.sub { color: #444; font-size: 10pt; margin-bottom: 14pt; }
+table { border-collapse: collapse; width: 100%; margin: 8pt 0; font-size: 9.5pt; }
+th, td { border: 1px solid #888; padding: 4pt 6pt; text-align: left; vertical-align: top; }
+th { background: #e8e8e8; font-weight: bold; }
+code, .mono { font-family: "Liberation Mono", monospace; font-size: 9pt; }
+pre { font-family: "Liberation Mono", monospace; font-size: 8.5pt; background: #f4f4f4;
+      border: 1px solid #ccc; padding: 6pt; white-space: pre-wrap; line-height: 1.3; }
+.nota { background: #f4f4f4; border-left: 3px solid #666; padding: 5pt 9pt; margin: 8pt 0; font-size: 10pt; }
+ol, ul { margin: 5pt 0 5pt 18pt; padding: 0; }
+li { margin: 3pt 0; }
+</style></head><body>
+
+<!-- O importador HTML do LibreOffice descarta o primeiro bloco do body.
+     Este paragrafo existe so para ser descartado no lugar do titulo. -->
+<p class="sacrificio-libreoffice">.</p>
+
+<p style="font-size:17pt;font-weight:bold;margin:0 0 4pt 0">Metodologia Experimental</p>
+<div class="sub">Sistema Multiagente Baseado em LLM para Orquestracao de Modulos Legados na
+RoboCup@Home &mdash; Lucca Santos Cerasomma / 113653 &mdash; Centro Universitario da Fundacao
+Herminio Ometto. Documento gerado em 07/10/2026.</div>
+
+<p>Este documento descreve o protocolo experimental adotado na validacao do modulo de
+raciocinio multiagente, a composicao do conjunto de ferramentas (<i>toolkit</i>) exposto ao
+Agente de Execucao e o mecanismo pelo qual essas ferramentas sao selecionadas e invocadas.
+Destina-se a compor a secao de Metodologia do trabalho.</p>
+
+<h2>1. Ambiente experimental</h2>
+
+<table>
+<tr><th style="width:32%">Componente</th><th>Configuracao</th></tr>
+<tr><td>Sistema operacional</td><td>Ubuntu 22.04 LTS (kernel 6.8)</td></tr>
+<tr><td>Middleware robotico</td><td>ROS 2 Humble Hawksbill</td></tr>
+<tr><td>Simulador</td><td>Ignition Gazebo 6.18.0 (Fortress)</td></tr>
+<tr><td>Navegacao</td><td>Nav2 &mdash; planejador global NavFn, controlador local DWB</td></tr>
+<tr><td>Localizacao</td><td>AMCL sobre mapa estatico (<span class="mono">likelihood_field</span>, 500&ndash;2000 particulas)</td></tr>
+<tr><td>Modelo de linguagem</td><td><b>Llama 3.1 8B</b>, servido localmente por Ollama; formato GGUF, quantizacao Q4_K_M; temperatura 0</td></tr>
+<tr><td>Orquestracao</td><td>LangGraph 1.2.11; langchain-core 1.6.0; langchain-ollama 1.1.0</td></tr>
+<tr><td>Linguagem</td><td>Python 3.10.12</td></tr>
+</table>
+
+<p><b>Cenario.</b> Residencia simulada de 30 x 27 m (Cenario1), dividida em quatro quadrantes
+por divisorias internas e mobiliada com mesas, armario e obstaculos cilindricos. O robo e de
+tracao diferencial, raio 0,2 m, equipado com LiDAR 2D operando a 10 Hz. A posicao de origem
+(<i>spawn</i>) e (-3,9; -5,8) no referencial do mundo.</p>
+
+<p><b>Mapa.</b> Utilizou-se um mapa previamente levantado por SLAM Toolbox
+(<span class="mono">Cenario1_12_11_10h11min</span>, 29,1 x 26,1 m, resolucao 0,05 m/celula),
+carregado estaticamente pelo <span class="mono">map_server</span>. A origem do referencial
+<span class="mono">map</span> coincide com o <i>spawn</i> do robo, de modo que as coordenadas
+do mapa e as do mundo diferem por um deslocamento constante de (-3,9; -5,8), aplicado
+explicitamente nas conversoes.</p>
+
+<p><b>Parametros de navegacao.</b> Velocidade linear maxima 0,26 m/s; velocidade angular
+maxima 1,0 rad/s; tolerancia de chegada 0,50 m em posicao e 3,14 rad em orientacao; raio de
+inflacao 0,55 m. A tolerancia angular ampla reflete o fato de que a tarefa e deslocar-se ate
+um <i>comodo</i>, nao atingir uma pose exata.</p>
+
+<h2>2. Arquitetura do modulo de raciocinio</h2>
+
+<p>O modulo foi implementado como um grafo de estados (LangGraph) de malha fechada, com tres
+agentes especializados. O Agente Supervisor e o ponto de entrada e o unico despachante: ele
+nunca executa acoes, apenas decide qual agente recebe o controle em seguida.</p>
+
+<pre>        SUPERVISOR &lt;---------------+
+         |     |      |            |
+         v     v      v            |
+    PLANEJADOR EXECUTOR  FIM       |
+         |     |                   |
+         +-----+-------------------+</pre>
+
+<table>
+<tr><th style="width:20%">Agente</th><th style="width:48%">Responsabilidade</th><th>Referencia de projeto</th></tr>
+<tr><td>Supervisor</td><td>Mantem o estado da missao; despacha uma subtarefa por vez; avalia o
+feedback do ROS 2; verifica o cumprimento do objetivo; dispara replanejamento</td>
+<td>Supervisor do MALMM + Agente de Avaliacao do MARS</td></tr>
+<tr><td>Planejador</td><td>Decompoe a intencao do usuario em subtarefas sequenciais; gera plano
+de recuperacao quando recebe contexto de erro</td><td>Planner do MALMM</td></tr>
+<tr><td>Executor</td><td>Traduz uma subtarefa em exatamente uma chamada de ferramenta ROS 2</td>
+<td>Agente ReAct do ROSA</td></tr>
+</table>
+
+<p>A integracao com os modulos legados ocorre por <b>topicos ROS 2</b>, nao por chamada de
+funcao: as metas de navegacao sao publicadas em <span class="mono">/room</span>, consumido pelo
+no <span class="mono">navigate_to_goal.py</span> do modulo de navegacao legado, que por sua vez
+aciona o Nav2 pela <i>action</i> <span class="mono">navigate_to_pose</span>. O desfecho real
+retorna pelo topico <span class="mono">/nav_result</span>. O contrato de integracao e, portanto,
+a interface de mensageria ja definida pelo trabalho legado.</p>
+
+<h2>3. Conjunto de ferramentas (toolkit)</h2>
+
+<p>Foram implementadas dez ferramentas, correspondentes a Tabela 3 do pre-projeto. Cada uma e
+uma funcao Python decorada com <span class="mono">@tool</span> (LangChain), cuja assinatura e
+docstring sao convertidas automaticamente no esquema JSON apresentado ao modelo.</p>
+
+<table>
+<tr><th style="width:27%">Ferramenta</th><th style="width:19%">Parametros</th><th style="width:21%">Modulo alvo</th><th>Verificacao do efeito</th></tr>
+<tr><td class="mono">navegar_para</td><td class="mono">destino: str</td><td>Navegacao (Nav2 via <span class="mono">/room</span>)</td><td>pose real do simulador comparada a coordenada da meta</td></tr>
+<tr><td class="mono">status_navegacao</td><td>&mdash;</td><td>Navegacao</td><td>leitura; sem efeito</td></tr>
+<tr><td class="mono">dar_re</td><td class="mono">distancia_m: float</td><td>Navegacao (<span class="mono">behavior_server</span>)</td><td>deslocamento medido por odometria</td></tr>
+<tr><td class="mono">girar</td><td class="mono">graus: float</td><td>Navegacao (<span class="mono">behavior_server</span>)</td><td>estado terminal da <i>action</i></td></tr>
+<tr><td class="mono">procurar_pessoa_na_sala</td><td class="mono">nome: str</td><td>Percepcao (simulada)</td><td><i>ground truth</i> do cenario</td></tr>
+<tr><td class="mono">procurar_objeto_na_sala</td><td class="mono">objeto: str</td><td>Percepcao (simulada)</td><td><i>ground truth</i> do cenario</td></tr>
+<tr><td class="mono">pegar_objeto</td><td class="mono">objeto: str</td><td>Manipulacao (simulada)</td><td>presenca no comodo e limite de carga de 3 kg</td></tr>
+<tr><td class="mono">entregar_objeto</td><td class="mono">objeto: str, destino: str</td><td>Manipulacao (simulada)</td><td>estado de carga do robo</td></tr>
+<tr><td class="mono">falar</td><td class="mono">mensagem: str</td><td>Interacao (topico <span class="mono">/tts</span>)</td><td>publicacao confirmada</td></tr>
+<tr><td class="mono">consultar_base</td><td class="mono">pergunta: str</td><td>Conhecimento do ambiente</td><td>leitura; sem efeito</td></tr>
+</table>
+
+<div class="nota"><b>Decisao de projeto.</b> As ferramentas de percepcao operam
+<b>exclusivamente no comodo corrente</b>, nao realizando busca multi-comodo. Essa restricao e
+deliberada: a secao 7.2 do pre-projeto critica o <span class="mono">find_person</span> do
+sistema legado justamente por concentrar "toda a logica de negocios (buscar comodos, navegar,
+procurar, repetir)". Mantendo as ferramentas como primitivas atomicas, a varredura da
+residencia precisa <b>emergir do plano gerado pelo Planejador</b> &mdash; que e precisamente a
+capacidade que o experimento se propoe a medir.</div>
+
+<h2>4. Mecanismo de selecao e invocacao de ferramentas</h2>
+
+<p>A selecao da ferramenta e feita por <i>tool calling</i> nativo, e nao por interpretacao de
+texto livre. O procedimento, por subtarefa, e o seguinte.</p>
+
+<h3>4.1 Exposicao do esquema ao modelo</h3>
+
+<p>No inicio da execucao, o conjunto de ferramentas e vinculado ao modelo por
+<span class="mono">ChatOllama(model="llama3.1", temperature=0).bind_tools(TOOLKIT)</span>. O
+LangChain converte cada funcao em um esquema JSON derivado da assinatura e da docstring. Para
+<span class="mono">navegar_para</span>, o esquema transmitido ao modelo e:</p>
+
+<pre>{
+  "type": "function",
+  "function": {
+    "name": "navegar_para",
+    "description": "Leva o robo ate um comodo do mapa usando o Nav2 e
+                    aguarda o resultado real. Use para qualquer deslocamento.
+                    'destino' deve ser um dos comodos conhecidos.",
+    "parameters": {
+      "type": "object",
+      "properties": { "destino": { "type": "string" } },
+      "required": ["destino"]
+    }
+  }
+}</pre>
+
+<h3>4.2 Emissao da chamada pelo modelo</h3>
+
+<p>O Executor submete ao modelo uma mensagem de sistema &mdash; contendo os comodos validos e o
+mapeamento entre tipos de acao e ferramentas &mdash; e a subtarefa recebida do Supervisor. O
+modelo responde com uma estrutura <span class="mono">tool_calls</span> contendo o nome da
+ferramenta e os argumentos, e nao com texto livre.</p>
+
+<h3>4.3 Camada de guarda deterministica</h3>
+
+<p>Antes da execucao, a escolha do modelo e confrontada com indicios lexicais da subtarefa. A
+guarda corrige dois erros reproduziveis observados no Llama 3.1 8B: a confusao entre acoes
+semanticamente proximas (selecionar <span class="mono">procurar_objeto_na_sala</span> para uma
+subtarefa de "pegar") e a inversao da convencao de sinal no giro ("para a direita" produzindo
+valor positivo). Toda correcao e contabilizada como metrica. Caso o modelo nao emita chamada
+alguma, um resolvedor por expressoes regulares assume, de modo que a subtarefa nunca seja
+convertida em uma acao arbitraria.</p>
+
+<h3>4.4 Execucao e retorno</h3>
+
+<p>A ferramenta e entao invocada. No caso de <span class="mono">navegar_para</span>, a cadeia
+completa e:</p>
+
+<pre>Executor
+  -> navegar_para(destino="kitchen")
+     -> ponte ROS 2: publica "kitchen" no topico /room
+        -> navigate_to_goal.py: resolve a coordenada no arquivo de metas
+           -> Nav2: action navigate_to_pose
+        &lt;- publica desfecho em /nav_result  ("success:kitchen" | "error:kitchen:6")
+     &lt;- ponte: aguarda o resultado COM O NOME DA META CORRESPONDENTE,
+        confronta com a pose real e devolve veredito
+  &lt;- "SUCESSO: ..." | "FALHA: ..." | "VAZIO: ..."
+</pre>
+
+<p>O prefixo do retorno determina o encaminhamento no grafo:
+<span class="mono">SUCESSO</span> avanca o plano; <span class="mono">FALHA</span> dispara
+replanejamento; <span class="mono">VAZIO</span> &mdash; busca realizada sem resultado &mdash;
+conclui a subtarefa e prossegue para o proximo passo do mesmo plano, em conformidade com o
+fluxo descrito na secao 7.2 do pre-projeto, no qual um retorno <i>not_found</i> leva o
+Supervisor ao comodo seguinte e nao a um replanejamento.</p>
+
+<h2>5. Protocolo experimental</h2>
+
+<h3>5.1 Delineamento</h3>
+
+<p>Cinco tarefas, duas condicoes (com e sem falha induzida) e cinco repeticoes, totalizando
+<b>50 execucoes</b>, todas com navegacao fisica no simulador.</p>
+
+<table>
+<tr><th style="width:14%">Identificador</th><th style="width:38%">Comando fornecido ao sistema</th><th>Pos-condicao verificada</th></tr>
+<tr><td>T1_nav</td><td>"va ate o kitchen"</td><td>robo no comodo <i>kitchen</i></td></tr>
+<tr><td>T2_pessoa</td><td>"encontre a Ana e avise onde ela esta"</td><td>Ana localizada em <i>kitchen</i></td></tr>
+<tr><td>T3_objeto</td><td>"encontre o remote control"</td><td>objeto localizado em <i>living room</i></td></tr>
+<tr><td>T4_entrega</td><td>"pegue o soda_can no kitchen e leve para o living room"</td><td><i>soda_can</i> entregue em <i>living room</i></td></tr>
+<tr><td>T5_sequencia</td><td>"va ate o bedroom, depois va ate o dining room e avise que terminou"</td><td>robo em <i>dining room</i> <b>e</b> mensagem emitida</td></tr>
+</table>
+
+<h3>5.2 Inducao controlada de falha</h3>
+
+<p>Para medir a Taxa de Recuperacao de Falha, a primeira tentativa de navegacao a um comodo
+designado retorna falha marcada como induzida, simulando passagem obstruida. A falha ocorre
+uma unica vez por comodo, de modo que o replanejamento tenha como contorna-la. Execucoes em que
+a falha nao chegou a ser disparada &mdash; porque o plano nao passou pelo comodo designado
+&mdash; sao excluidas do calculo da metrica.</p>
+
+<h3>5.3 Verificacao do resultado</h3>
+
+<p>Este e o ponto metodologico central. <b>A conclusao da tarefa nao e aquilo que o agente
+declara.</b> Cada tarefa possui uma pos-condicao verificada externamente, contra duas fontes
+independentes do sistema sob teste: a pose verdadeira do robo, lida diretamente do simulador
+(<span class="mono">/world/empty/pose/info</span>) e convertida ao referencial do mapa; e o
+estado do cenario, definido em arquivo de configuracao.</p>
+
+<p>A adocao dessa separacao decorre de observacao empirica: em campanha preliminar, a
+transformada <span class="mono">map&rarr;base_link</span> &mdash; a estimativa que o proprio
+robo possui de sua posicao &mdash; chegou a divergir 18 m da posicao real. Verificar o
+resultado por essa transformada mediria a confianca do robo em si mesmo, e nao o desfecho da
+tarefa. A divergencia entre as duas fontes passou a ser registrada como metrica de erro de
+localizacao.</p>
+
+<div class="nota"><b>Separacao de papeis.</b> O <b>agente</b> decide utilizando a estimativa
+propria, como ocorreria em um robo real; o <b>verificador do experimento</b> confere contra a
+verdade do simulador; a diferenca entre ambos constitui o erro de localizacao registrado.</div>
+
+<h3>5.4 Procedimento por execucao</h3>
+
+<ol>
+<li>Retorno do robo a base por <b>navegacao</b> (nao por teleporte, que dessincronizaria a
+odometria da correspondencia de varreduras do LiDAR).</li>
+<li>Registro do erro de localizacao acumulado, <b>antes</b> de qualquer correcao.</li>
+<li>Reancoragem da pose estimada por <span class="mono">/initialpose</span>, equivalente a
+informar a um robo real sua posicao inicial.</li>
+<li>Reinicializacao do estado de manipulacao e rearme da falha induzida.</li>
+<li>Execucao da missao pelo grafo de agentes, com teto de seis replanejamentos.</li>
+<li>Verificacao da pos-condicao contra o <i>ground truth</i>.</li>
+<li>Registro da pose final real, do erro de localizacao e da ocorrencia de tombamento do robo
+(altura superior a 0,55 m).</li>
+</ol>
+
+<h3>5.5 Metricas coletadas</h3>
+
+<table>
+<tr><th style="width:12%">Metrica</th><th style="width:44%">Definicao</th><th>Instrumentacao</th></tr>
+<tr><td><b>TCR</b></td><td>Proporcao de tarefas multi-etapa concluidas sem intervencao humana</td><td>pos-condicao verificada externamente</td></tr>
+<tr><td><b>FRR</b></td><td>Proporcao de falhas induzidas das quais o Supervisor se recuperou, concluindo a missao</td><td>pos-condicao, restrita as execucoes com falha efetivamente disparada</td></tr>
+<tr><td><b>PL</b></td><td>Tempo que o Planejador leva para decompor uma tarefa</td><td>cronometragem do no do grafo; decomposicao inicial e replanejamentos registrados separadamente</td></tr>
+<tr><td><b>AL</b></td><td>Intervalo entre o Supervisor receber feedback de sucesso e despachar a subtarefa seguinte ao Executor</td><td>marcacao de instante na confirmacao e fechamento no despacho</td></tr>
+</table>
+
+<p>Registraram-se ainda, por execucao: numero de replanejamentos, chamadas de ferramenta,
+correcoes da guarda deterministica, erro de localizacao antes e depois da reancoragem, pose
+final real e ocorrencia de tombamento. Foi tambem instrumentada a <b>taxa de discordancia</b>
+&mdash; proporcao de execucoes em que o agente declarou sucesso sem que a pos-condicao se
+sustentasse &mdash; adotada como medida direta da fidedignidade do relato do sistema.</p>
+
+<h2>6. Ameacas a validade</h2>
+
+<ol>
+<li><b>Ausencia de reinicializacao completa do simulador entre execucoes.</b> O servico de
+reinicializacao de mundo do Ignition Fortress nao restaura poses de modelo, e o teleporte
+dessincroniza a odometria. Optou-se pela reancoragem da pose estimada no inicio de cada
+execucao, registrando-se a deriva acumulada previa.</li>
+<li><b>Percepcao e manipulacao simuladas.</b> O ambiente nao dispoe de modulo de visao
+computacional nem de manipulador; essas ferramentas respondem contra o estado declarado do
+cenario, como no sistema legado. <b>A navegacao, contudo, e fisica.</b> As metricas medem,
+portanto, a capacidade de raciocinio somada a navegacao real, e nao acuracia de percepcao.</li>
+<li><b>Dimensao da amostra.</b> Cinco repeticoes por condicao permitem identificar tendencia,
+mas nao produzem intervalo de confianca estreito.</li>
+<li><b>Cenario e modelo unicos.</b> Nao se realizou comparacao entre diferentes residencias
+simuladas nem entre modelos de linguagem.</li>
+<li><b>Ausencia de linha de base quantitativa do sistema legado.</b> A comparacao com o
+pipeline reativo permanece argumentativa &mdash; ele nao decompoe tarefas nem replaneja, por
+construcao &mdash; e nao medida lado a lado nas mesmas tarefas.</li>
+</ol>
+
+</body></html>

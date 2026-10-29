@@ -1,0 +1,2 @@
+timestamp,model_name,user_instruction,status,duration_seconds,replan_count,tool_calls,decisions,avg_decision_latency,avg_supervisor_latency,avg_planner_latency,avg_executor_latency
+2026-09-19T17:58:03,llama3.1,va ate a origem,success,14.65,0,1,6,2.44,0.0,0.469,14.173

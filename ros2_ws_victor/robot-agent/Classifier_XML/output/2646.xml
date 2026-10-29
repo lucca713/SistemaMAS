@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<huricExample id="2646">
+  <commands>
+    <command>
+      <sentence>enter the door of the kitchen</sentence>
+      <tokens>
+        <token id="1" surface="enter" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="door" label="object"/>
+        <token id="4" surface="of" label="other"/>
+        <token id="5" surface="the" label="other"/>
+        <token id="6" surface="kitchen" label="room"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

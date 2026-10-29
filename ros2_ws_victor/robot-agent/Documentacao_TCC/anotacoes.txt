@@ -1,0 +1,1 @@
+Classificar todas as frases do dataset Simpleset demorou exatos 3 minutos

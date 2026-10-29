@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<huricExample id="2657">
+  <commands>
+    <command>
+      <sentence>move near the counter</sentence>
+      <tokens>
+        <token id="1" surface="move" label="action"/>
+        <token id="2" surface="near" label="direction"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="counter" label="object"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

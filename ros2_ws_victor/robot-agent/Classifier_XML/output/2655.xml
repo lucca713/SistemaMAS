@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<huricExample id="2655">
+  <commands>
+    <command>
+      <sentence>look for the wrench in the bathroom</sentence>
+      <tokens>
+        <token id="1" surface="look" label="action"/>
+        <token id="2" surface="for" label="other"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="wrench" label="object"/>
+        <token id="5" surface="in" label="other"/>
+        <token id="6" surface="the" label="other"/>
+        <token id="7" surface="bathroom" label="room"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

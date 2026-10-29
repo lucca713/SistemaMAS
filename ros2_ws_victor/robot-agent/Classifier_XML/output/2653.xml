@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<huricExample id="2653">
+  <commands>
+    <command>
+      <sentence>look at me</sentence>
+      <tokens>
+        <token id="1" surface="look" label="action"/>
+        <token id="2" surface="at" label="other"/>
+        <token id="3" surface="me" label="other"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+<huricExample id="2667">
+  <commands>
+    <command>
+      <sentence>take the phone on the couch</sentence>
+      <tokens>
+        <token id="1" surface="take" label="action"/>
+        <token id="2" surface="the" label="other"/>
+        <token id="3" surface="phone" label="object"/>
+        <token id="4" surface="on" label="direction"/>
+        <token id="5" surface="the" label="other"/>
+        <token id="6" surface="couch" label="location"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>

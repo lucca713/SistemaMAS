@@ -1,0 +1,444 @@
+<?xml version="1.0" ?>
+<sdf version='1.10'>
+<model name='Robot' canonical_link='base_link'>
+      <pose>0 0 0 0 0 0</pose>
+
+      <!-- BASE_FOOTPRINT - Projeção do robô no chão (z=0) -->
+      <link name='base_footprint'>
+        <pose relative_to='__model__'>0 0 0 0 0 0</pose>
+      </link>
+
+      <!-- BASE_LINK - Frame central do robô (elevado 0.55m) -->
+      <link name='base_link'>
+        <pose relative_to='__model__'>0 0 0.55 0 0 0</pose>
+      </link>
+
+      <!-- Joint entre base_footprint e base_link -->
+      <joint name="base_footprint_joint" type="fixed">
+        <parent>base_footprint</parent>
+        <child>base_link</child>
+      </joint>
+
+      <!--chassis-->
+      <link name='chassis'>
+        <pose relative_to='base_link'>0 0 0 0 0 0</pose>
+        <inertial>
+        <mass>1</mass>
+          <inertia>
+            <ixx>0.145833</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.145833</iyy>
+            <iyz>0</iyz>
+            <izz>0.125</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.7</radius>
+              <length>0.75</length>
+            </cylinder>
+          </geometry>
+          <!--Color of the link-->
+          <material>
+            <ambient>0.0 0.0 1.0 1</ambient>
+            <diffuse>0.0 0.0 1.0 1</diffuse>
+            <specular>0.0 0.0 1.0 1</specular>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.7</radius>
+              <length>0.75</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+
+      <!-- LIDAR link separado - Elevado 0.8m acima do chassis para evitar detectar partes do robô -->
+      <link name="lidar_link">
+        <pose relative_to="chassis">0 0 0.8 0 0 0</pose>
+        <inertial>
+          <mass>0.1</mass>
+          <inertia>
+            <ixx>0.0001</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.0001</iyy>
+            <iyz>0</iyz>
+            <izz>0.0001</izz>
+          </inertia>
+        </inertial>
+
+        <!-- Visualização da haste do LIDAR -->
+        <visual name='lidar_tower'>
+          <pose>0 0 -0.4 0 0 0</pose>
+          <geometry>
+            <cylinder>
+              <radius>0.02</radius>
+              <length>0.8</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.3 0.3 0.3 1</ambient>
+            <diffuse>0.3 0.3 0.3 1</diffuse>
+            <specular>0.3 0.3 0.3 1</specular>
+          </material>
+        </visual>
+
+        <!-- Visualização do sensor LIDAR -->
+        <visual name='lidar_sensor'>
+          <geometry>
+            <cylinder>
+              <radius>0.05</radius>
+              <length>0.05</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.0 1.0 0.0 1</ambient>
+            <diffuse>0.0 1.0 0.0 1</diffuse>
+            <specular>0.0 1.0 0.0 1</specular>
+          </material>
+        </visual>
+
+        <!-- LIDAR/SCAN -->
+        <sensor name='gpu_lidar' type='gpu_lidar'>
+          <pose relative_to='lidar_link'>0 0 0 0 0 0</pose>
+          <topic>lidar</topic>
+          <update_rate>10</update_rate>
+          <gz_frame_id>lidar_link</gz_frame_id>
+          <ray>
+            <scan>
+              <horizontal>
+                <samples>720</samples>
+                <resolution>1</resolution>
+                <min_angle>-3.14159</min_angle>
+                <max_angle>3.14159</max_angle>
+              </horizontal>
+              <vertical>
+                <samples>1</samples>
+                <resolution>0.01</resolution>
+                <min_angle>0</min_angle>
+                <max_angle>0</max_angle>
+              </vertical>
+            </scan>
+            <range>
+              <min>0.08</min>
+              <max>10.0</max>
+              <resolution>0.01</resolution>
+            </range>
+          </ray>
+          <always_on>1</always_on>
+          <visualize>true</visualize>
+        </sensor>
+      </link>
+
+      <!-- Joint fixo entre chassis e LIDAR -->
+      <joint name="lidar_joint" type="fixed">
+        <parent>chassis</parent>
+        <child>lidar_link</child>
+      </joint>
+
+      <!-- Joint fixo entre base_link e chassis -->
+      <joint name="base_link_joint" type="fixed">
+        <parent>base_link</parent>
+        <child>chassis</child>
+      </joint>
+
+      <!--left_wheel-->
+      <link name='left_wheel'>
+        <pose relative_to='chassis'>0 0.85 0 -1.5707 0 0</pose>
+        <inertial>
+        <mass>1</mass>
+          <inertia>
+            <ixx>0.145833</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.145833</iyy>
+            <iyz>0</iyz>
+            <izz>0.125</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>0.3</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 0 1</ambient>
+            <diffuse>0.0 0.0 0 1</diffuse>
+            <specular>0.0 0.0 0 1</specular>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>0.3</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+
+      <!--right_wheel-->
+      <link name='right_wheel'>
+        <pose relative_to='chassis'>0 -0.85 0 -1.5707 0 0</pose>
+        <inertial>
+        <mass>1</mass>
+          <inertia>
+            <ixx>0.145833</ixx>
+            <ixy>0</ixy>
+            <ixz>0</ixz>
+            <iyy>0.145833</iyy>
+            <iyz>0</iyz>
+            <izz>0.125</izz>
+          </inertia>
+        </inertial>
+        <visual name='visual'>
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>0.3</length>
+            </cylinder>
+          </geometry>
+          <material>
+            <ambient>0.0 0.0 0 1</ambient>
+            <diffuse>0.0 0.0 0 1</diffuse>
+            <specular>0.0 0.0 0 1</specular>
+          </material>
+        </visual>
+        <collision name='collision'>
+          <geometry>
+            <cylinder>
+              <radius>0.5</radius>
+              <length>0.3</length>
+            </cylinder>
+          </geometry>
+        </collision>
+      </link>
+
+      <!--arbitrary frame-->
+      <frame name="caster_frame" attached_to='chassis'>
+          <pose>0 0 0 0 0 0</pose>
+      </frame>
+
+      <!--caster wheel frontal-->
+      <link name='caster_front'>
+          <pose relative_to='caster_frame'>0.575 0 -0.375 0 -0 0</pose>
+          <inertial>
+              <mass>0.1</mass>
+              <inertia>
+                  <ixx>0.016</ixx>
+                  <ixy>0</ixy>
+                  <ixz>0</ixz>
+                  <iyy>0.016</iyy>
+                  <iyz>0</iyz>
+                  <izz>0.016</izz>
+              </inertia>
+          </inertial>
+          <visual name='visual'>
+              <geometry>
+                  <sphere>
+                      <radius>0.12</radius>
+                  </sphere>
+              </geometry>
+              <material>
+                  <ambient>0.0 1 0.0 1</ambient>
+                  <diffuse>0.0 1 0.0 1</diffuse>
+                  <specular>0.0 1 0.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'>
+              <geometry>
+                  <sphere>
+                      <radius>0.12</radius>
+                  </sphere>
+              </geometry>
+          </collision>
+      </link>
+
+      <!--caster wheel traseira-->
+      <link name='caster_rear'>
+          <pose relative_to='caster_frame'>-0.575 0 -0.375 0 -0 0</pose>
+          <inertial>
+              <mass>0.1</mass>
+              <inertia>
+                  <ixx>0.016</ixx>
+                  <ixy>0</ixy>
+                  <ixz>0</ixz>
+                  <iyy>0.016</iyy>
+                  <iyz>0</iyz>
+                  <izz>0.016</izz>
+              </inertia>
+          </inertial>
+          <visual name='visual'>
+              <geometry>
+                  <sphere>
+                      <radius>0.12</radius>
+                  </sphere>
+              </geometry>
+              <material>
+                  <ambient>1 0.0 0.0 1</ambient>
+                  <diffuse>1 0.0 0.0 1</diffuse>
+                  <specular>1 0.0 0.0 1</specular>
+              </material>
+          </visual>
+          <collision name='collision'>
+              <geometry>
+                  <sphere>
+                      <radius>0.12</radius>
+                  </sphere>
+              </geometry>
+          </collision>
+      </link>
+
+      <!--left wheel joint-->
+      <joint name='left_wheel_joint' type='revolute'>
+          <pose relative_to='left_wheel'/>
+          <parent>chassis</parent>
+          <child>left_wheel</child>
+          <axis>
+              <xyz expressed_in='__model__'>0 1 0</xyz> <!--can be descired to any frame or even arbitrary frames-->
+              <limit>
+                  <lower>-1.79769e+308</lower>    <!--negative infinity-->
+                  <upper>1.79769e+308</upper>     <!--positive infinity-->
+              </limit>
+          </axis>
+      </joint>
+
+      <!--right wheel joint-->
+      <joint name='right_wheel_joint' type='revolute'>
+          <pose relative_to='right_wheel'/>
+          <parent>chassis</parent>
+          <child>right_wheel</child>
+          <axis>
+              <xyz expressed_in='__model__'>0 1 0</xyz>
+              <limit>
+                  <lower>-1.79769e+308</lower>    <!--negative infinity-->
+                  <upper>1.79769e+308</upper>     <!--positive infinity-->
+              </limit>
+          </axis>
+      </joint>
+
+      <!--caster wheel frontal joint-->
+      <joint name='caster_front_wheel' type='ball'>
+          <parent>chassis</parent>
+          <child>caster_front</child>
+      </joint>
+
+      <!--caster wheel traseira joint-->
+      <joint name='caster_rear_wheel' type='ball'>
+          <parent>chassis</parent>
+          <child>caster_rear</child>
+      </joint>
+
+      <!-- Plugin DiffDrive - Movimento e Odometria -->
+      <plugin
+        name="gz::sim::systems::DiffDrive"
+        filename="gz-sim-diff-drive-system">
+
+        <!-- Ligações das rodas -->
+        <left_joint>left_wheel_joint</left_joint>
+        <right_joint>right_wheel_joint</right_joint>
+
+        <!-- Parâmetros físicos REAIS do modelo -->
+        <wheel_separation>1.7</wheel_separation>
+        <wheel_radius>0.5</wheel_radius>
+
+        <!-- Manter Frequência sincronizada com TF (30Hz) -->
+        <odom_publish_frequency>30</odom_publish_frequency>
+
+        <!-- Tópicos e frames -->
+        <topic>cmd_vel</topic>
+        <odom_topic>odom</odom_topic>
+        
+        <!-- Frames TF - Publica odom → base_footprint -->
+        <frame_id>odom</frame_id>
+        <child_frame_id>base_footprint</child_frame_id>
+        
+        <!-- Publicação da odometria e TF -->
+        <publish_odom>true</publish_odom>
+        <publish_odom_tf>true</publish_odom_tf>
+        <publish_wheel_tf>false</publish_wheel_tf>
+      </plugin>
+
+      <!-- plugin para publcar os joint_state-->
+      <plugin
+        filename="gz-sim-joint-state-publisher-system"
+        name="gz::sim::systems::JointStatePublisher">
+        <publish_frequency>10.0</publish_frequency>
+        <topic>joint_states</topic>
+      </plugin>
+      
+      <!-- Pose plugin-->
+      <plugin
+        filename="gz-sim-pose-publisher-system"
+        name="gz::sim::systems::PosePublisher">
+        <publish_frequency>30.0</publish_frequency> 
+        <publish_all>false</publish_all> 
+        <topic>model/Robot/pose</topic> 
+      </plugin>
+
+      <plugin 
+        filename="plugins/RobotController.py"
+        name="RobotController" >
+      </plugin>
+
+
+      <!-- Moving Left-->
+      <plugin filename="gz-sim-triggered-publisher-system"
+        name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777234</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0.0}, angular: {z: 0.5}
+        </output>
+      </plugin>
+      <!-- Moving Forward-->
+      <plugin filename="gz-sim-triggered-publisher-system"
+        name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777235</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0.5}, angular: {z: 0.0}
+        </output>
+      </plugin>
+      <!-- Moving Right-->
+      <plugin filename="gz-sim-triggered-publisher-system"
+        name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777236</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0.0}, angular: {z: -0.5}
+        </output>
+      </plugin>
+      <!-- Moving Backward-->
+      <plugin filename="gz-sim-triggered-publisher-system"
+        name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">16777237</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: -0.5}, angular: {z: 0.0}
+        </output>
+      </plugin>
+      <!-- Braking-->
+      <plugin filename="gz-sim-triggered-publisher-system"
+        name="gz::sim::systems::TriggeredPublisher">
+        <input type="gz.msgs.Int32" topic="/keyboard/keypress">
+          <match field="data">66</match>
+        </input>
+        <output type="gz.msgs.Twist" topic="/cmd_vel">
+          linear: {x: 0}, angular: {z: 0.0}
+        </output>
+      </plugin>
+      
+    </model>
+</sdf>

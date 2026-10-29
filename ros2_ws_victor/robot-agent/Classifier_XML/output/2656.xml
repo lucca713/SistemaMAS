@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<huricExample id="2656">
+  <commands>
+    <command>
+      <sentence>move near the couch of the bedroom</sentence>
+      <tokens>
+        <token id="1" surface="move" label="action"/>
+        <token id="2" surface="near" label="direction"/>
+        <token id="3" surface="the" label="other"/>
+        <token id="4" surface="couch" label="object"/>
+        <token id="5" surface="of" label="other"/>
+        <token id="6" surface="the" label="other"/>
+        <token id="7" surface="bedroom" label="room"/>
+      </tokens>
+    </command>
+  </commands>
+</huricExample>
